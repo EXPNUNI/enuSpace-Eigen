@@ -6,6 +6,7 @@
 #include <memory>    // For std::unique_ptr
 #include <vector>
 
+#include "enuSpaceEigen.h"
 #include <Eigen/Eigen>
 using namespace Eigen;
 
@@ -19,9 +20,13 @@ int GetArrayIndexFromDimension(CString strOrgDim, CString strDimension);
 bool GetRowColFormDimension(const wchar_t* dims, int& iRow, int& iCol);
 
 // MAXTRIX의 타입에 따라서 값을 Array의 정보에 전달하고 전달받는 함수.
-void SetMatrixXd_From_Array(MatrixXd &mat, double* pValue, int Col, int Row);
-void SetArray_From_MatrixXd(MatrixXd &mat, double* pValue, int Col, int Row);
-void SetMatrixXf_From_Array(MatrixXf &mat, float* pValue, int Col, int Row);
-void SetArray_From_MatrixXf(MatrixXf &mat, float* pValue, int Col, int Row);
-void SetMatrixXi_From_Array(MatrixXi &mat, int* pValue, int Col, int Row);
-void SetArray_From_MatrixXi(MatrixXi &mat, int* pValue, int Col, int Row);
+void SetMatrixXd_From_Array(MatrixXd &mat, double* pValue, int Row, int Col);
+void SetArray_From_MatrixXd(MatrixXd &mat, double* pValue, int Row, int Col);
+void SetMatrixXf_From_Array(MatrixXf &mat, float* pValue, int Row, int Col);
+void SetArray_From_MatrixXf(MatrixXf &mat, float* pValue, int Row, int Col);
+void SetMatrixXi_From_Array(MatrixXi &mat, int* pValue, int Row, int Col);
+void SetArray_From_MatrixXi(MatrixXi &mat, int* pValue, int Row, int Col);
+
+void SetReShapeArray_From_MatrixXd(MatrixXd &mat, std::string variable);
+void SetReShapeArray_From_MatrixXf(MatrixXf &mat, std::string variable);
+void SetReShapeArray_From_MatrixXi(MatrixXi &mat, std::string variable);

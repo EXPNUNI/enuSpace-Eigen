@@ -147,68 +147,107 @@ bool GetRowColFormDimension(const wchar_t* dims, int& iRow, int& iCol)
 	}
 }
 
-void SetMatrixXd_From_Array(MatrixXd &mat, double* pValue, int Col, int Row)
+void SetMatrixXd_From_Array(MatrixXd &mat, double* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			mat(i, j) = *((double*)pValue + (i*Col + j));
+			mat(i, j) = *((double*)pValue + (i*Row + j));
 		}
 	}
 }
 
-void SetArray_From_MatrixXd(MatrixXd &mat, double* pValue, int Col, int Row)
+void SetArray_From_MatrixXd(MatrixXd &mat, double* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			*((double*)pValue + (i*Col + j)) = mat(i, j);
+			*((double*)pValue + (i*Row + j)) = mat(i, j);
 		}
 	}
 }
 
-void SetMatrixXf_From_Array(MatrixXf &mat, float* pValue, int Col, int Row)
+void SetMatrixXf_From_Array(MatrixXf &mat, float* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			mat(i, j) = *((float*)pValue + (i*Col + j));
+			mat(i, j) = *((float*)pValue + (i*Row + j));
 		}
 	}
 }
 
-void SetArray_From_MatrixXf(MatrixXf &mat, float* pValue, int Col, int Row)
+void SetArray_From_MatrixXf(MatrixXf &mat, float* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			*((float*)pValue + (i*Col + j)) = mat(i, j);
+			*((float*)pValue + (i*Row + j)) = mat(i, j);
 		}
 	}
 }
 
-void SetMatrixXi_From_Array(MatrixXi &mat, int* pValue, int Col, int Row)
+void SetMatrixXi_From_Array(MatrixXi &mat, int* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			mat(i, j) = *((int*)pValue + (i*Col + j));
+			mat(i, j) = *((int*)pValue + (i*Row + j));
 		}
 	}
 }
 
-void SetArray_From_MatrixXi(MatrixXi &mat, int* pValue, int Col, int Row)
+void SetArray_From_MatrixXi(MatrixXi &mat, int* pValue, int Row, int Col)
 {
 	for (int i = 0; i < Row; i++)
 	{
 		for (int j = 0; j < Col; j++)
 		{
-			*((int*)pValue + (i*Col + j)) = mat(i, j);
+			*((int*)pValue + (i*Row + j)) = mat(i, j);
 		}
 	}
+}
+
+void SetReShapeArray_From_MatrixXd(MatrixXd &mat, std::string variable)
+{
+	double *pValue = new double[mat.size()];
+	SetArray_From_MatrixXd(mat, pValue, mat.rows(), mat.cols());
+
+	variable = variable + string_format("[%d][%d]", mat.rows(), mat.cols());
+	SetReShapeArrayValue(variable, pValue, DEF_DOUBLE, mat.size());
+	delete[] pValue;
+
+	std::string msg = string_format("info : matrix cols, rows reshaped (%s).", variable.c_str());
+	PrintMessage(msg);
+}
+
+void SetReShapeArray_From_MatrixXf(MatrixXf &mat, std::string variable)
+{
+	float *pValue = new float[mat.size()];
+	SetArray_From_MatrixXf(mat, pValue, mat.rows(), mat.cols());
+
+	variable = variable + string_format("[%d][%d]", mat.rows(), mat.cols());
+	SetReShapeArrayValue(variable, pValue, DEF_FLOAT, mat.size());
+	delete[] pValue;
+
+	std::string msg = string_format("info : matrix cols, rows reshaped (%s).", variable.c_str());
+	PrintMessage(msg);
+}
+
+void SetReShapeArray_From_MatrixXi(MatrixXi &mat, std::string variable)
+{
+	int *pValue = new int[mat.size()];
+	SetArray_From_MatrixXi(mat, pValue, mat.rows(), mat.cols());
+
+	variable = variable + string_format("[%d][%d]", mat.rows(), mat.cols());
+	SetReShapeArrayValue(variable, pValue, DEF_INT, mat.size());
+	delete[] pValue;
+
+	std::string msg = string_format("info : matrix cols, rows reshaped (%s).", variable.c_str());
+	PrintMessage(msg);
 }

@@ -80,7 +80,7 @@ BOOL CenuSpaceEigenApp::InitInstance()
 	_wsplitpath_s(szPath, drive, dir, fname, ext);
 
 	std::string strMessage;
-	std::string strTenMessage = string_format("SQLite -> %s", strMessage.c_str());
+	std::string strTenMessage = string_format("Eigen -> %s", strMessage.c_str());
 
 	CString strDllPath;
 	strDllPath.Format(L"%s%s", drive, dir);
@@ -578,7 +578,7 @@ double GetValue(std::string strVariable)
 
 void PrintMessage(std::string strMessage)
 {
-	std::string strTenMessage = string_format("SQLite -> %s", strMessage.c_str());
+	std::string strTenMessage = string_format("Eigen -> %s", strMessage.c_str());
 	if (g_fcbPrintMessage)
 	{
 		g_fcbPrintMessage(StringToCString(strTenMessage).GetBuffer(0));
@@ -704,6 +704,10 @@ extern "C" __declspec(dllexport) void Eigen_Addition(wchar_t* id, FuncParam* pPa
 		int MatrixC_Col = 0;
 		bool bMatC = false;
 
+		std::string ObjId = CStringToString(id);
+		std::string variable;
+		variable = ObjId + ".MATRIX_C";
+
 		const VariableStruct* pMatrixA = pParam->GetParam("MATRIX_A");
 		if (pMatrixA)
 		{
@@ -740,45 +744,55 @@ extern "C" __declspec(dllexport) void Eigen_Addition(wchar_t* id, FuncParam* pPa
 			{
 			case DEF_DOUBLE:
 			{
-				MatrixXd mat_a(MatrixA_Col, MatrixA_Row);
-				SetMatrixXd_From_Array(mat_a, (double*)pMatrixA->pValue, MatrixA_Col, MatrixA_Row);
+				MatrixXd mat_a(MatrixA_Row, MatrixA_Col);
+				SetMatrixXd_From_Array(mat_a, (double*)pMatrixA->pValue, MatrixA_Row, MatrixA_Col);
 
-				MatrixXd mat_b(MatrixB_Col, MatrixB_Row);
-				SetMatrixXd_From_Array(mat_b, (double*)pMatrixB->pValue, MatrixB_Col, MatrixB_Row);
+				MatrixXd mat_b(MatrixB_Row, MatrixB_Col);
+				SetMatrixXd_From_Array(mat_b, (double*)pMatrixB->pValue, MatrixB_Row, MatrixB_Col);
 				
-				MatrixXd mat_c(MatrixC_Col, MatrixC_Row);
+				MatrixXd mat_c(MatrixC_Row, MatrixC_Col);
 				mat_c = mat_a + mat_b;
 
-				SetArray_From_MatrixXd(mat_c, (double*)pMatrixC->pValue, MatrixC_Col, MatrixC_Row);
+				if (MatrixC_Col == mat_c.cols() && MatrixC_Row == mat_c.rows())
+					SetArray_From_MatrixXd(mat_c, (double*)pMatrixC->pValue, MatrixC_Row, MatrixC_Col);
+				else
+					SetReShapeArray_From_MatrixXd(mat_c, variable);
+
 				break;
 			}
 			case DEF_FLOAT:
 			{
-				MatrixXf mat_a(MatrixA_Col, MatrixA_Row);
-				SetMatrixXf_From_Array(mat_a, (float*)pMatrixA->pValue, MatrixA_Col, MatrixA_Row);
+				MatrixXf mat_a(MatrixA_Row, MatrixA_Col);
+				SetMatrixXf_From_Array(mat_a, (float*)pMatrixA->pValue, MatrixA_Row, MatrixA_Col);
 
-				MatrixXf mat_b(MatrixB_Col, MatrixB_Row);
-				SetMatrixXf_From_Array(mat_b, (float*)pMatrixB->pValue, MatrixB_Col, MatrixB_Row);
+				MatrixXf mat_b(MatrixB_Row, MatrixB_Col);
+				SetMatrixXf_From_Array(mat_b, (float*)pMatrixB->pValue, MatrixB_Row, MatrixB_Col);
 
-				MatrixXf mat_c(MatrixC_Col, MatrixC_Row);
+				MatrixXf mat_c(MatrixC_Row, MatrixC_Col);
 				mat_c = mat_a + mat_b;
 
-				SetArray_From_MatrixXf(mat_c, (float*)pMatrixC->pValue, MatrixC_Col, MatrixC_Row);
+				if (MatrixC_Col == mat_c.cols() && MatrixC_Row == mat_c.rows())
+					SetArray_From_MatrixXf(mat_c, (float*)pMatrixC->pValue, MatrixC_Row, MatrixC_Col);
+				else
+					SetReShapeArray_From_MatrixXf(mat_c, variable);
 
 				break;
 			}
 			case DEF_INT:
 			{
-				MatrixXi mat_a(MatrixA_Col, MatrixA_Row);
-				SetMatrixXi_From_Array(mat_a, (int*)pMatrixA->pValue, MatrixA_Col, MatrixA_Row);
+				MatrixXi mat_a(MatrixA_Row, MatrixA_Col);
+				SetMatrixXi_From_Array(mat_a, (int*)pMatrixA->pValue, MatrixA_Row, MatrixA_Col);
 
-				MatrixXi mat_b(MatrixB_Col, MatrixB_Row);
-				SetMatrixXi_From_Array(mat_b, (int*)pMatrixB->pValue, MatrixB_Col, MatrixB_Row);
+				MatrixXi mat_b(MatrixB_Row, MatrixB_Col);
+				SetMatrixXi_From_Array(mat_b, (int*)pMatrixB->pValue, MatrixB_Row, MatrixB_Col);
 
-				MatrixXi mat_c(MatrixC_Col, MatrixC_Row);
+				MatrixXi mat_c(MatrixC_Row, MatrixC_Col);
 				mat_c = mat_a + mat_b;
 
-				SetArray_From_MatrixXi(mat_c, (int*)pMatrixC->pValue, MatrixC_Col, MatrixC_Row);
+				if (MatrixC_Col == mat_c.cols() && MatrixC_Row == mat_c.rows())
+					SetArray_From_MatrixXi(mat_c, (int*)pMatrixC->pValue, MatrixC_Row, MatrixC_Col);
+				else
+					SetReShapeArray_From_MatrixXi(mat_c, variable);
 
 				break;
 			}
